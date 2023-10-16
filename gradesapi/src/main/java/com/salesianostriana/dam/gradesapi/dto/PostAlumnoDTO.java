@@ -18,7 +18,8 @@ public record PostAlumnoDTO(
 
     public static PostAlumnoDTO of(Alumno a){
 
-        return new PostAlumnoDTO(a.getId(),
+        return new PostAlumnoDTO(
+                a.getId(),
                 a.getNombre(),
                 a.getApellidos(),
                 a.getEmail(),
