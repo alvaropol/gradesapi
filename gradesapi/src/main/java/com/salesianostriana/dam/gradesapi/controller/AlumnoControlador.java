@@ -136,11 +136,56 @@ public class AlumnoControlador {
     })
     @PostMapping("/")
     public ResponseEntity<PostAlumnoDTO> crearAlumno(@RequestBody PostAlumnoDTO nuevo){
-        Alumno alumno = service.save(nuevo);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(PostAlumnoDTO.of(alumno));
+        if(nuevo==null){
+
+           return ResponseEntity.badRequest().build();
+       }else{
+
+            Alumno alumno = service.save(nuevo);
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(PostAlumnoDTO.of(alumno));
+        }
+    }
+
+
+    @Operation(summary = "Edita un alumno")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha editado ese alumno",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Alumno.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            [
+                                                {"id": 1, "nombre": "Alfonso", "apellidos":
+                                                "García López", "email": "alfonso@gmail.com",
+                                                "telefono":"095454545", "fechaNacimiento": "23/02/1998",
+                                                 "cantidadAsignaturas": 8}
+                                            ]                                          
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado al alumno con ese ID",
+                    content = @Content),
+    })
+    @PutMapping("/{id}")
+    @JsonView(AlumnoView.AlumnoList01.class)
+    public ResponseEntity<GetAlumnoDTO> editAlumno(@PathVariable Long id, @RequestBody PostAlumnoDTO editado){
+
+        return ResponseEntity.of(service.findById(id).map(
+                antiguo -> {
+                    antiguo.setNombre(editado.nombre());
+                    antiguo.setApellidos(editado.apellidos());
+                    antiguo.setEmail(editado.email());
+                    antiguo.setTelefono(editado.telefono());
+                    antiguo.setFechaNacimiento(editado.fechaNacimiento());
+
+                    return GetAlumnoDTO.of(service.save(PostAlumnoDTO.of(antiguo)));
+               }));
     }
 
 
