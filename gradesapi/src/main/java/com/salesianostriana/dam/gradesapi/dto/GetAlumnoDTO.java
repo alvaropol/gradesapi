@@ -3,7 +3,6 @@ package com.salesianostriana.dam.gradesapi.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.AlumnoView;
-import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 
 import java.time.LocalDate;
 import java.util.List;
