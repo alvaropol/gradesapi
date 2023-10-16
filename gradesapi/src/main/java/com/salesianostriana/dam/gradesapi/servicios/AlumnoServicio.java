@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.gradesapi.servicios;
 
+import com.salesianostriana.dam.gradesapi.dto.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.repositorios.AlumnoRepositorio;
 import lombok.RequiredArgsConstructor;
@@ -22,4 +23,15 @@ public class AlumnoServicio {
         return repositorio.findById(id);
     }
 
+    public Alumno save(PostAlumnoDTO nuevo){
+
+        Alumno a = new Alumno();
+        a.setNombre(nuevo.nombre());
+        a.setApellidos(nuevo.apellidos());
+        a.setEmail(nuevo.email());
+        a.setTelefono(nuevo.telefono());
+        a.setFechaNacimiento(nuevo.fechaNacimiento());
+
+        return repositorio.save(a);
+    }
 }

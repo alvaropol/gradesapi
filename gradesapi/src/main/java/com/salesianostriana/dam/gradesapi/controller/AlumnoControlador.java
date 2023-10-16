@@ -2,6 +2,7 @@ package com.salesianostriana.dam.gradesapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.GetAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.dto.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.AlumnoView;
 import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
@@ -14,11 +15,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -113,4 +112,36 @@ public class AlumnoControlador {
         return ResponseEntity.of(service.findById(id)
                 .map(GetAlumnoDTO::of));
     }
+
+
+    @Operation(summary = "Guarda un alumno")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha creado un alumno",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Alumno.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            [
+                                                {"id": 1, "nombre": "Julio", "apellidos":
+                                                "García López", "email": "julio@gmail.com",
+                                                "telefono":"095454545", "fechaNacimiento": "23/02/1998"}
+                                            ]                                          
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "400",
+                    description = "Bad Request por parte del usuario",
+                    content = @Content),
+    })
+    @PostMapping("/")
+    public ResponseEntity<PostAlumnoDTO> crearAlumno(@RequestBody PostAlumnoDTO nuevo){
+        Alumno alumno = service.save(nuevo);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(PostAlumnoDTO.of(alumno));
+    }
+
+
 }
