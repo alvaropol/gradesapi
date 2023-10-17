@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.gradesapi.servicios;
 
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
+import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 import com.salesianostriana.dam.gradesapi.repositorios.AsignaturaRepositorio;
 import lombok.RequiredArgsConstructor;
@@ -19,29 +20,14 @@ public class AsignaturaServicio {
 
     public Optional<Asignatura> findById(Long id){return repositorio.findById(id);}
 
-    public Asignatura save(PostAsignaturaDTO nuevo){
-        Asignatura asignaturaExistente = null;
+    public Asignatura save(PostAsignaturaDTO nuevo) {
 
-        if(nuevo.id()!=null){
-            Optional<Asignatura> asignaturaOptional = findById(nuevo.id());
-            if(asignaturaOptional.isPresent()){
-                asignaturaExistente = asignaturaOptional.get();
-            }
-        }
+        Asignatura a = new Asignatura();
+        a.setId(nuevo.id());
+        a.setNombre(nuevo.nombre());
+        a.setHoras(nuevo.horas());
+        a.setDescripcion(nuevo.descripcion());
 
-        if(asignaturaExistente!=null){
-            asignaturaExistente.setNombre(nuevo.nombre());
-            asignaturaExistente.setHoras(nuevo.horas());
-            asignaturaExistente.setDescripcion(nuevo.descripcion());
-
-            return repositorio.save(asignaturaExistente);
-        }else{
-            Asignatura nuevaAsignatura = new Asignatura();
-            nuevaAsignatura.setNombre(nuevo.nombre());
-            nuevaAsignatura.setHoras(nuevo.horas());
-            nuevaAsignatura.setDescripcion(nuevo.descripcion());
-
-            return repositorio.save(nuevaAsignatura);
-        }
+        return repositorio.save(a);
     }
 }
