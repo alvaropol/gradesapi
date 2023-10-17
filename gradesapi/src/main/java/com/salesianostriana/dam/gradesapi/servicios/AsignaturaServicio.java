@@ -1,11 +1,15 @@
 package com.salesianostriana.dam.gradesapi.servicios;
 
+import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
+import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
+import com.salesianostriana.dam.gradesapi.modelo.ReferenteEvaluacion;
 import com.salesianostriana.dam.gradesapi.repositorios.AsignaturaRepositorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,29 +23,35 @@ public class AsignaturaServicio {
 
     public Optional<Asignatura> findById(Long id){return repositorio.findById(id);}
 
-    public Asignatura save(PostAsignaturaDTO nuevo){
-        Asignatura asignaturaExistente = null;
+    public Asignatura save(PostAsignaturaDTO nuevo) {
 
-        if(nuevo.id()!=null){
-            Optional<Asignatura> asignaturaOptional = findById(nuevo.id());
-            if(asignaturaOptional.isPresent()){
-                asignaturaExistente = asignaturaOptional.get();
+        Asignatura asignatura = new Asignatura();
+        asignatura.setId(nuevo.id());
+        asignatura.setNombre(nuevo.nombre());
+        asignatura.setHoras(nuevo.horas());
+        asignatura.setDescripcion(nuevo.descripcion());
+
+        return repositorio.save(asignatura);
+    }
+
+    public Optional<Asignatura> addReferente(Long id, List<ReferenteEvaluacion> referentes) {
+        Optional<Asignatura> selected = repositorio.findById(id);
+
+        if (selected.isPresent()) {
+            Asignatura asignatura = selected.get();
+
+            // No crees una nueva instancia de Asignatura, trabaja directamente con la existente
+            for (ReferenteEvaluacion ref : referentes) {
+                boolean exists = asignatura.getReferentes().stream()
+                        .anyMatch(existingRef -> existingRef.getCodReferente().equals(ref.getCodReferente()));
+
+                if(!exists)
+                    asignatura.addReferente(ref);
+
             }
+
+            return Optional.of(repositorio.save(asignatura));
         }
-
-        if(asignaturaExistente!=null){
-            asignaturaExistente.setNombre(nuevo.nombre());
-            asignaturaExistente.setHoras(nuevo.horas());
-            asignaturaExistente.setDescripcion(nuevo.descripcion());
-
-            return repositorio.save(asignaturaExistente);
-        }else{
-            Asignatura nuevaAsignatura = new Asignatura();
-            nuevaAsignatura.setNombre(nuevo.nombre());
-            nuevaAsignatura.setHoras(nuevo.horas());
-            nuevaAsignatura.setDescripcion(nuevo.descripcion());
-
-            return repositorio.save(nuevaAsignatura);
-        }
+        return Optional.empty();
     }
 }
