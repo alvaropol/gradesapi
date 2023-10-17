@@ -23,16 +23,39 @@ public class AlumnoServicio {
         return repositorio.findById(id);
     }
 
-    public Alumno save(PostAlumnoDTO nuevo){
 
-        Alumno a = new Alumno();
-        a.setNombre(nuevo.nombre());
-        a.setApellidos(nuevo.apellidos());
-        a.setEmail(nuevo.email());
-        a.setTelefono(nuevo.telefono());
-        a.setFechaNacimiento(nuevo.fechaNacimiento());
+    public Alumno save(PostAlumnoDTO nuevo) {
 
-        return repositorio.save(a);
+        Alumno alumnoExistente = null;
+
+        if (nuevo.id() != null) {
+            Optional<Alumno> alumnoOptional = repositorio.findById(nuevo.id());
+
+            if (alumnoOptional.isPresent()) {
+                alumnoExistente = alumnoOptional.get();
+            }
+        }
+
+        if (alumnoExistente != null) {
+
+            alumnoExistente.setNombre(nuevo.nombre());
+            alumnoExistente.setApellidos(nuevo.apellidos());
+            alumnoExistente.setEmail(nuevo.email());
+            alumnoExistente.setTelefono(nuevo.telefono());
+            alumnoExistente.setFechaNacimiento(nuevo.fechaNacimiento());
+
+            return repositorio.save(alumnoExistente);
+        } else {
+
+            Alumno nuevoAlumno = new Alumno();
+            nuevoAlumno.setNombre(nuevo.nombre());
+            nuevoAlumno.setApellidos(nuevo.apellidos());
+            nuevoAlumno.setEmail(nuevo.email());
+            nuevoAlumno.setTelefono(nuevo.telefono());
+            nuevoAlumno.setFechaNacimiento(nuevo.fechaNacimiento());
+
+            return repositorio.save(nuevoAlumno);
+        }
     }
 
 }
