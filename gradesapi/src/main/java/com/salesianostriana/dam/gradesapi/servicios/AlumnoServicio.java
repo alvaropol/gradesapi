@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.gradesapi.servicios;
 
-import com.salesianostriana.dam.gradesapi.dto.PostAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.repositorios.AlumnoRepositorio;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AlumnoServicio {
         Alumno alumnoExistente = null;
 
         if (nuevo.id() != null) {
-            Optional<Alumno> alumnoOptional = repositorio.findById(nuevo.id());
+            Optional<Alumno> alumnoOptional = findById(nuevo.id());
 
             if (alumnoOptional.isPresent()) {
                 alumnoExistente = alumnoOptional.get();
@@ -45,6 +45,7 @@ public class AlumnoServicio {
             alumnoExistente.setFechaNacimiento(nuevo.fechaNacimiento());
 
             return repositorio.save(alumnoExistente);
+
         } else {
 
             Alumno nuevoAlumno = new Alumno();

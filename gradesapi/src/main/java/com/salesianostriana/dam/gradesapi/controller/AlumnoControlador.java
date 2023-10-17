@@ -1,8 +1,8 @@
 package com.salesianostriana.dam.gradesapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.salesianostriana.dam.gradesapi.dto.GetAlumnoDTO;
-import com.salesianostriana.dam.gradesapi.dto.PostAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.AlumnoView;
 import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
@@ -114,7 +114,7 @@ public class AlumnoControlador {
     }
 
 
-    @Operation(summary = "Guarda un alumno")
+    @Operation(summary = "Crea un alumno")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Se ha creado un alumno",
@@ -138,7 +138,6 @@ public class AlumnoControlador {
     public ResponseEntity<PostAlumnoDTO> crearAlumno(@RequestBody PostAlumnoDTO nuevo){
 
         if(nuevo==null){
-
            return ResponseEntity.badRequest().build();
        }else{
 
