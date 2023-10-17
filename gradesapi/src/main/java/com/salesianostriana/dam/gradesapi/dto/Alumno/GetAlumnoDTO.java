@@ -1,4 +1,4 @@
-package com.salesianostriana.dam.gradesapi.dto;
+package com.salesianostriana.dam.gradesapi.dto.Alumno;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;

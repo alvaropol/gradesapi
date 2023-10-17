@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.gradesapi.repositorios;
 
-import com.salesianostriana.dam.gradesapi.dto.PostAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
 import jakarta.annotation.PostConstruct;
