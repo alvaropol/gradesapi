@@ -1,10 +1,13 @@
 package com.salesianostriana.dam.gradesapi.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
+import com.salesianostriana.dam.gradesapi.modelo.AlumnoView;
 import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
+import com.salesianostriana.dam.gradesapi.modelo.AsignaturaView;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -61,6 +64,7 @@ public class AsignaturaControlador {
                     content = @Content),
     })
     @GetMapping("/")
+    @JsonView(AsignaturaView.AsignaturaList01.class)
     public ResponseEntity<List<GetAsignaturaDTO>> findAll(){
         List<Asignatura> list = service.findAll();
 
@@ -73,6 +77,39 @@ public class AsignaturaControlador {
                         .toList();
 
         return ResponseEntity.ok(result);
+    }
+
+    @Operation(summary = "Obtiene una asignatura por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Si se ha encontrado esa asignatura con ese ID",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            [
+                                               { “id”: 1, “nombre”: “Bases de Datos”, 
+                                               “horas”: 192, “descripción”: “Asignatura de bases de datos”, 
+                                               “referentes”: [
+                                               { “codReferente”: 1, 
+                                               “descripcion”: “El alumno sabe hacer consultas},
+                                               { “codReferente”: 2, 
+                                               “descripcion”: “El alumno sabe definir conceptos de base de datos}
+                                               ] }
+                                               
+                                            ]                                          
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ninguna asignatura con ese ID",
+                    content = @Content),
+    })
+    @GetMapping("/{id}")
+    @JsonView(AsignaturaView.AsignaturaList02.class)
+    public ResponseEntity<GetAsignaturaDTO> getById(@PathVariable Long id){
+        return ResponseEntity.of(service.findById(id)
+                .map(GetAsignaturaDTO::of));
     }
 
     @Operation(summary = "Crea una asignatura")
