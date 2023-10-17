@@ -1,6 +1,9 @@
 package com.salesianostriana.dam.gradesapi.controller;
 
+import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
+import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,10 +17,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +28,52 @@ import org.springframework.web.bind.annotation.RestController;
 public class AsignaturaControlador {
 
     private final AsignaturaServicio service;
+
+
+    @Operation(summary = "Obtiene una lista de todas las asignaturas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se han encontrado todas las asignaturas",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            [
+                                                { "id": 1, "nombre": "Bases de Datos", 
+                                                "horas": 192, "descripción": "Asignatura de bases de datos", 
+                                                "numReferentes": 12}
+                                                
+                                                { "id": 2, "nombre": "Programacion", 
+                                                "horas": 230, "descripción": "Asignatura de programacion", 
+                                                "numReferentes": 8}
+                                                
+                                                { "id": 3, "nombre": "Sistemas informáticos", 
+                                                "horas": 98, "descripción": "Asignatura de Sistemas informáticos", 
+                                                "numReferentes": 4}
+                                                
+                         
+                                            ]                                          
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ninguna asignatura",
+                    content = @Content),
+    })
+    @GetMapping("/")
+    public ResponseEntity<List<GetAsignaturaDTO>> findAll(){
+        List<Asignatura> list = service.findAll();
+
+        if (list.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        List<GetAsignaturaDTO> result =
+                list.stream()
+                        .map(GetAsignaturaDTO::of)
+                        .toList();
+
+        return ResponseEntity.ok(result);
+    }
 
     @Operation(summary = "Crea una asignatura")
     @ApiResponses(value = {
