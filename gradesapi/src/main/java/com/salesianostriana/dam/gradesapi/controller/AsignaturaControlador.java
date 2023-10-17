@@ -3,11 +3,9 @@ package com.salesianostriana.dam.gradesapi.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetAsignaturaDTO;
+import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetReferenteEnAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
-import com.salesianostriana.dam.gradesapi.modelo.Alumno;
-import com.salesianostriana.dam.gradesapi.modelo.AlumnoView;
-import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
-import com.salesianostriana.dam.gradesapi.modelo.AsignaturaView;
+import com.salesianostriana.dam.gradesapi.modelo.*;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -23,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -139,12 +138,44 @@ public class AsignaturaControlador {
     @PostMapping("/")
     public ResponseEntity<PostAsignaturaDTO> crearAsignatura(@RequestBody PostAsignaturaDTO nuevo){
 
-        if(nuevo==null){
-            return ResponseEntity.badRequest().build();
-        }else{
+        if(nuevo!=null){
             Asignatura asignatura = service.save(nuevo);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(PostAsignaturaDTO.of(asignatura));
+        }else{
+            return ResponseEntity.badRequest().build();
         }
+    }
+
+    @Operation(summary = "Añade un referente a una asignatura por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha creado ese/esos referente/s en la asignatura",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                               [
+                                                     {"codReferente": 1, "descripcion": "El alumno sabe comandos de base de datos"},
+                                                     {"codReferente": 2, "descripcion": "El alumno sabe hacer subconsultas"}
+                                                  
+                                               ]
+                                                                 
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "Bad Request por parte del usuario",
+                    content = @Content),
+    })
+    @PostMapping("/{id}/referente")
+    public ResponseEntity<PostAsignaturaDTO> createReferente(@PathVariable Long id, @RequestBody List<ReferenteEvaluacion> referencias){
+
+        Optional<Asignatura> asignatura = service.addReferente(id, referencias);
+        if(asignatura.isEmpty())
+            return ResponseEntity.notFound().build();
+        Asignatura resp = asignatura.get();
+
+        return ResponseEntity.ok(PostAsignaturaDTO.of(resp));
     }
 }
