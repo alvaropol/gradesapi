@@ -236,4 +236,32 @@ public class AlumnoControlador {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Elimina una asignatura en un alumno")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado la asignatura en el alumno por su ID",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Alumno.class))
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ese alumno por su ID",
+                    content = @Content),
+    })
+    @DeleteMapping("/{id}/matricula/{id_asig}")
+    public ResponseEntity<?> deleteAsignatura(@PathVariable Long id, @PathVariable Long id_asig){
+
+
+        Optional<Alumno> alumnoOptional = service.findById(id);
+        Optional<Asignatura> asignaturaOptional = serviceAsignatura.findById(id_asig);
+
+        if(alumnoOptional.isPresent()&&asignaturaOptional.isPresent()){
+
+            service.removeAsignatura(id,id_asig);
+            return ResponseEntity.noContent().build();
+
+        }
+        return ResponseEntity.notFound().build();
+
+    }
+
 }

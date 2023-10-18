@@ -64,6 +64,22 @@ public class AlumnoServicio {
 
     }
 
+    public void removeAsignatura(Long id, Long id_asig){
+
+        Optional<Alumno> alumnoOptional = repositorio.findById(id);
+        Optional<Asignatura> asignaturaOptional = repositorioAsignatura.findById(id_asig);
+
+        if (alumnoOptional.isPresent() && asignaturaOptional.isPresent()) {
+            Alumno alumno = alumnoOptional.get();
+            Asignatura asignatura = asignaturaOptional.get();
+
+            alumno.getAsignaturas().remove(asignatura);
+            alumno.setAsignaturas(alumno.getAsignaturas());
+            repositorio.save(alumno);
+        }
+
+    }
+
     public void deleteAlumno(Alumno alumno){
          repositorio.delete(alumno);
     }
