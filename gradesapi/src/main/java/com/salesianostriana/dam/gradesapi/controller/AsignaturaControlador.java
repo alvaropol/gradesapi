@@ -147,6 +147,19 @@ public class AsignaturaControlador {
         }
     }
 
+    @PutMapping("/{id}")
+    @JsonView(AsignaturaView.AsignaturaList01.class)
+    public ResponseEntity<GetAsignaturaDTO> editAsignatura (@PathVariable Long id, @RequestBody PostAsignaturaDTO editado){
+        return ResponseEntity.of(service.findById(id).map(
+                antiguo ->{
+                    antiguo.setNombre(editado.nombre());
+                    antiguo.setHoras(editado.horas());
+                    antiguo.setDescripcion(editado.descripcion());
+
+                    return GetAsignaturaDTO.of(service.saveDTO(antiguo));
+                }));
+    }
+
     @Operation(summary = "Añade un referente a una asignatura por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
