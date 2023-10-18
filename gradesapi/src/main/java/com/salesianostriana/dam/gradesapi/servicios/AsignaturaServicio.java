@@ -1,15 +1,12 @@
 package com.salesianostriana.dam.gradesapi.servicios;
 
-import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
-import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 import com.salesianostriana.dam.gradesapi.modelo.ReferenteEvaluacion;
 import com.salesianostriana.dam.gradesapi.repositorios.AsignaturaRepositorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +29,10 @@ public class AsignaturaServicio {
         asignatura.setDescripcion(nuevo.descripcion());
 
         return repositorio.save(asignatura);
+    }
+
+    public Asignatura saveDTO(Asignatura a){
+        return repositorio.save((a));
     }
 
     public Optional<Asignatura> addReferente(Long id, List<ReferenteEvaluacion> referentes) {

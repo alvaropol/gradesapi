@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 public record PostAsignaturaDTO(
 
-
         Long id,
         String nombre,
 
