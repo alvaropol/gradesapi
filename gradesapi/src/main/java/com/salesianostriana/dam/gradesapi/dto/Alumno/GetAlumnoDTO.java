@@ -3,9 +3,12 @@ package com.salesianostriana.dam.gradesapi.dto.Alumno;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.AlumnoView;
+import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public record GetAlumnoDTO(
@@ -33,19 +36,20 @@ public record GetAlumnoDTO(
 
 ) {
 
-    public static GetAlumnoDTO of (Alumno a){
-           return new GetAlumnoDTO(
-                   a.getId(),
-                   a.getNombre(),
-                   a.getApellidos(),
-                   a.getEmail(),
-                   a.getTelefono(),
-                   a.getFechaNacimiento(),
-                   a.getAsignaturas().size(),
-                   a.getAsignaturas().stream()
-                           .map(GetAsignaturaEnAlumnoDTO::of)
-                           .collect(Collectors.toList())
+    public static GetAlumnoDTO of (Alumno a) {
 
-           );
+        return new GetAlumnoDTO(
+                a.getId(),
+                a.getNombre(),
+                a.getApellidos(),
+                a.getEmail(),
+                a.getTelefono(),
+                a.getFechaNacimiento(),
+                a.getAsignaturas().size(),
+                a.getAsignaturas().stream()
+                        .map(GetAsignaturaEnAlumnoDTO::of)
+                        .collect(Collectors.toList())
+
+        );
     }
 }

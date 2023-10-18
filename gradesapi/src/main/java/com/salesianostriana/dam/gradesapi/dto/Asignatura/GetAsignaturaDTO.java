@@ -28,27 +28,16 @@ public record GetAsignaturaDTO(
 ) {
     public static GetAsignaturaDTO of(Asignatura a) {
 
-        List<ReferenteEvaluacion> referentes = a.getReferentes();
-        if (referentes != null) {
+
             return new GetAsignaturaDTO(
                     a.getId(),
                     a.getNombre(),
                     a.getHoras(),
                     a.getDescripcion().isEmpty() ? "Sin descripción" : a.getDescripcion(),
                     a.getReferentes().size(),
-                    referentes.stream()
+                    a.getReferentes().stream()
                             .map(GetReferenteEnAsignaturaDTO::of)
                             .collect(Collectors.toList())
             );
-        }else{
-            return new GetAsignaturaDTO(
-                    a.getId(),
-                    a.getNombre(),
-                    a.getHoras(),
-                    a.getDescripcion().isEmpty() ? "Sin descripción" : a.getDescripcion(),
-                    0,
-                    Collections.emptyList()
-            );
         }
-    }
 }
