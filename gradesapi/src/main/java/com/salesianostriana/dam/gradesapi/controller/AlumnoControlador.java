@@ -219,5 +219,21 @@ public class AlumnoControlador {
 
     }
 
+    @Operation(summary = "Elimina un alumno por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado ese alumno por su ID",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Alumno.class))
+                    )}),
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAlumno (@PathVariable Long id){
+
+        if(service.existsById(id)){
+            service.deleteById(id);
+        }
+        return ResponseEntity.noContent().build();
+    }
 
 }

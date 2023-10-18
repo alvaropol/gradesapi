@@ -63,4 +63,16 @@ public class AlumnoServicio {
         }
 
     }
+
+    public void deleteAlumno(Alumno alumno){
+         repositorio.delete(alumno);
+    }
+
+    public boolean existsById(Long id){
+         return repositorio.existsById(id);
+    }
+
+    public void deleteById(Long id){
+        repositorio.deleteById(id);
+    }
 }
