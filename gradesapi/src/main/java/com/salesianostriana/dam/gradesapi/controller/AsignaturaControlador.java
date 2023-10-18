@@ -88,13 +88,13 @@ public class AsignaturaControlador {
                             examples = {@ExampleObject(
                                     value = """
                                             [
-                                               { “id”: 1, “nombre”: “Bases de Datos”, 
-                                               “horas”: 192, “descripción”: “Asignatura de bases de datos”, 
-                                               “referentes”: [
-                                               { “codReferente”: 1, 
-                                               “descripcion”: “El alumno sabe hacer consultas},
-                                               { “codReferente”: 2, 
-                                               “descripcion”: “El alumno sabe definir conceptos de base de datos}
+                                               { "id": 1, "nombre": "Bases de Datos", 
+                                               "horas": 192, "descripción": "Asignatura de bases de datos", 
+                                               "referentes": [
+                                               { "codReferente": 1, 
+                                               "descripcion": "El alumno sabe hacer consultas},
+                                               { "codReferente": 2, 
+                                               "descripcion": "El alumno sabe definir conceptos de base de datos}
                                                ] }
                                                
                                             ]                                          
@@ -193,6 +193,30 @@ public class AsignaturaControlador {
         return ResponseEntity.ok(PostAsignaturaDTO.of(resp));
     }
 
+    @Operation(summary = "Edita la descripción de un referente pasándole su codReferente dentro de una asignatura")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha editado la descripcion del referente correctamente",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                               [
+                                                     { "id": 1, "nombre": "Bases de Datos", "horas": 192, 
+                                                     "descripción": "Asignatura de bases de datos", 
+                                                     "referentes": [
+                                                     { "codReferente": "RA01.a", "descripcion":"Descripcion de referente EDITADO" }
+                                                     ]
+                                                                  
+                                               ]
+                                                                 
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "Bad Request por parte del usuario",
+                    content = @Content),
+    })
     @PutMapping("/{id}/referente/{cod_ref}")
     public ResponseEntity<PostAsignaturaDTO> editTextReferente(@PathVariable Long id, @PathVariable String cod_ref, @RequestBody PostAsignaturaDTO text){
         Optional<Asignatura> asignatura = service.findById(id);
