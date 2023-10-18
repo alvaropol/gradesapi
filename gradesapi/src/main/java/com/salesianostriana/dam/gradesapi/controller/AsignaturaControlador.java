@@ -105,7 +105,7 @@ public class AsignaturaControlador {
                     content = @Content),
     })
     @GetMapping("/{id}")
-    @JsonView(AsignaturaView.AsignaturaList02.class)
+
     public ResponseEntity<GetAsignaturaDTO> getById(@PathVariable Long id){
         return ResponseEntity.of(service.findById(id)
                 .map(GetAsignaturaDTO::of));

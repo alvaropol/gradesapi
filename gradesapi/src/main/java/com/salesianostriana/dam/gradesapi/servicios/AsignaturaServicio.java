@@ -39,7 +39,7 @@ public class AsignaturaServicio {
 
         if (selected.isPresent()) {
             Asignatura asignatura = selected.get();
-            
+
             for (ReferenteEvaluacion ref : referentes) {
                 boolean exists = asignatura.getReferentes().stream()
                         .anyMatch(referenteExiste -> referenteExiste.getCodReferente().equals(ref.getCodReferente()));
