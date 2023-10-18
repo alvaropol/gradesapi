@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.gradesapi.controller;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
@@ -252,15 +253,21 @@ public class AlumnoControlador {
 
 
         Optional<Alumno> alumnoOptional = service.findById(id);
-        Optional<Asignatura> asignaturaOptional = serviceAsignatura.findById(id_asig);
 
-        if(alumnoOptional.isPresent()&&asignaturaOptional.isPresent()){
-
-            service.removeAsignatura(id,id_asig);
-            return ResponseEntity.noContent().build();
-
+        if(alumnoOptional.isEmpty()){
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        Optional<Asignatura> asignaturaOptional = alumnoOptional.get().getAsignaturas().stream()
+                .filter(asignatura -> asignatura.getId().equals(id_asig))
+                .findFirst();
+
+        if (asignaturaOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        Alumno alumno = alumnoOptional.get();
+        Asignatura asignatura = asignaturaOptional.get();
+        service.removeAsignatura(alumno,asignatura);
+        return ResponseEntity.noContent().build();
 
     }
 
