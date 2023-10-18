@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -190,5 +191,23 @@ public class AsignaturaControlador {
         Asignatura resp = asignatura.get();
 
         return ResponseEntity.ok(PostAsignaturaDTO.of(resp));
+    }
+
+    @PutMapping("/{id}/referente/{cod_ref}")
+    public ResponseEntity<PostAsignaturaDTO> editTextReferente(@PathVariable Long id, @PathVariable String cod_ref, @RequestBody PostAsignaturaDTO text){
+        Optional<Asignatura> asignatura = service.findById(id);
+
+        if(asignatura.isPresent()){
+            Asignatura a = asignatura.get();
+            a.getReferentes().stream()
+                    .filter(r -> r.getCodReferente().equals(cod_ref))
+                    .findFirst()
+                    .ifPresent(referente -> referente.setDescripcion(text.descripcion()));
+
+            service.saveDTO(a);
+
+            return ResponseEntity.ok(PostAsignaturaDTO.of(a));
+        }
+        return ResponseEntity.notFound().build();
     }
 }
