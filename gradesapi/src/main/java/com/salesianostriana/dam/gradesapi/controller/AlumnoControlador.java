@@ -5,7 +5,9 @@ import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.AlumnoView;
+import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
+import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ import java.util.List;
 public class AlumnoControlador {
 
     private final AlumnoServicio service;
+    private final AsignaturaServicio serviceAsignatura;
 
 
     @Operation(summary = "Obtiene una lista de todos los alumnos")
@@ -182,9 +186,37 @@ public class AlumnoControlador {
                     antiguo.setEmail(editado.email());
                     antiguo.setTelefono(editado.telefono());
                     antiguo.setFechaNacimiento(editado.fechaNacimiento());
+                    antiguo.setAsignaturas((antiguo.getAsignaturas()));
 
-                    return GetAlumnoDTO.of(service.save(PostAlumnoDTO.of(antiguo)));
+                    return GetAlumnoDTO.of(service.saveDTO(antiguo));
                }));
+    }
+
+
+    @Operation(summary = "Añade una asignatura a un alumno ya creado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha editado ese alumno",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Alumno.class))
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ese/a alumno/asignatura o ambos por su ID",
+                    content = @Content),
+    })
+    @PostMapping("/{id}/matricula/{id_asig}")
+    public ResponseEntity<?> addAsignatura(@PathVariable Long id, @PathVariable Long id_asig){
+        Optional<Alumno> alumnoOptional = service.findById(id);
+        Optional<Asignatura> asignaturaOptional = serviceAsignatura.findById(id_asig);
+
+        if(alumnoOptional.isPresent()&& asignaturaOptional.isPresent()){
+
+            service.addAsignatura(id, id_asig);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+
+        }
+        return ResponseEntity.notFound().build();
+
     }
 
 
