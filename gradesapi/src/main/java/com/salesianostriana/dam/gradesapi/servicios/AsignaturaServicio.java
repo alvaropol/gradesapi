@@ -39,11 +39,10 @@ public class AsignaturaServicio {
 
         if (selected.isPresent()) {
             Asignatura asignatura = selected.get();
-
-            // No crees una nueva instancia de Asignatura, trabaja directamente con la existente
+            
             for (ReferenteEvaluacion ref : referentes) {
                 boolean exists = asignatura.getReferentes().stream()
-                        .anyMatch(existingRef -> existingRef.getCodReferente().equals(ref.getCodReferente()));
+                        .anyMatch(referenteExiste -> referenteExiste.getCodReferente().equals(ref.getCodReferente()));
 
                 if(!exists)
                     asignatura.addReferente(ref);
