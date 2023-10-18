@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +54,12 @@ public class AsignaturaServicio {
             return Optional.of(repositorio.save(asignatura));
         }
         return Optional.empty();
+    }
+
+    public void deleteAsignatura(Asignatura borrarAsignatura){
+        List<ReferenteEvaluacion> referentesABorrar = borrarAsignatura.getReferentes();
+        referentesABorrar.stream()
+                .peek(borrarAsignatura::removeReferente);
+        repositorio.delete(borrarAsignatura);
     }
 }

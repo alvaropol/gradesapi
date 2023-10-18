@@ -37,7 +37,7 @@ public class AsignaturaControlador {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se han encontrado todas las asignaturas",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -54,7 +54,7 @@ public class AsignaturaControlador {
                                                 "horas": 98, "descripción": "Asignatura de Sistemas informáticos", 
                                                 "numReferentes": 4}
                                                 
-                         
+                                                                     
                                             ]                                          
                                             """
                             )}
@@ -65,7 +65,7 @@ public class AsignaturaControlador {
     })
     @GetMapping("/")
     @JsonView(AsignaturaView.AsignaturaList01.class)
-    public ResponseEntity<List<GetAsignaturaDTO>> findAll(){
+    public ResponseEntity<List<GetAsignaturaDTO>> findAll() {
         List<Asignatura> list = service.findAll();
 
         if (list.isEmpty())
@@ -83,7 +83,7 @@ public class AsignaturaControlador {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Si se ha encontrado esa asignatura con ese ID",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -107,7 +107,7 @@ public class AsignaturaControlador {
     })
     @GetMapping("/{id}")
     @JsonView(AsignaturaView.AsignaturaList02.class)
-    public ResponseEntity<GetAsignaturaDTO> getById(@PathVariable Long id){
+    public ResponseEntity<GetAsignaturaDTO> getById(@PathVariable Long id) {
         return ResponseEntity.of(service.findById(id)
                 .map(GetAsignaturaDTO::of));
     }
@@ -116,7 +116,7 @@ public class AsignaturaControlador {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Se ha creado una asignatura",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -137,22 +137,22 @@ public class AsignaturaControlador {
                     content = @Content),
     })
     @PostMapping("/")
-    public ResponseEntity<PostAsignaturaDTO> crearAsignatura(@RequestBody PostAsignaturaDTO nuevo){
+    public ResponseEntity<PostAsignaturaDTO> crearAsignatura(@RequestBody PostAsignaturaDTO nuevo) {
 
-        if(nuevo!=null){
+        if (nuevo != null) {
             Asignatura asignatura = service.save(nuevo);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(PostAsignaturaDTO.of(asignatura));
-        }else{
+        } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/{id}")
     @JsonView(AsignaturaView.AsignaturaList01.class)
-    public ResponseEntity<GetAsignaturaDTO> editAsignatura (@PathVariable Long id, @RequestBody PostAsignaturaDTO editado){
+    public ResponseEntity<GetAsignaturaDTO> editAsignatura(@PathVariable Long id, @RequestBody PostAsignaturaDTO editado) {
         return ResponseEntity.of(service.findById(id).map(
-                antiguo ->{
+                antiguo -> {
                     antiguo.setNombre(editado.nombre());
                     antiguo.setHoras(editado.horas());
                     antiguo.setDescripcion(editado.descripcion());
@@ -165,7 +165,7 @@ public class AsignaturaControlador {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Se ha creado ese/esos referente/s en la asignatura",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -183,10 +183,10 @@ public class AsignaturaControlador {
                     content = @Content),
     })
     @PostMapping("/{id}/referente")
-    public ResponseEntity<PostAsignaturaDTO> createReferente(@PathVariable Long id, @RequestBody List<ReferenteEvaluacion> referencias){
+    public ResponseEntity<PostAsignaturaDTO> createReferente(@PathVariable Long id, @RequestBody List<ReferenteEvaluacion> referencias) {
 
         Optional<Asignatura> asignatura = service.addReferente(id, referencias);
-        if(asignatura.isEmpty())
+        if (asignatura.isEmpty())
             return ResponseEntity.notFound().build();
         Asignatura resp = asignatura.get();
 
@@ -197,7 +197,7 @@ public class AsignaturaControlador {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se ha editado la descripcion del referente correctamente",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Asignatura.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -218,10 +218,10 @@ public class AsignaturaControlador {
                     content = @Content),
     })
     @PutMapping("/{id}/referente/{cod_ref}")
-    public ResponseEntity<PostAsignaturaDTO> editTextReferente(@PathVariable Long id, @PathVariable String cod_ref, @RequestBody PostAsignaturaDTO text){
+    public ResponseEntity<PostAsignaturaDTO> editTextReferente(@PathVariable Long id, @PathVariable String cod_ref, @RequestBody PostAsignaturaDTO text) {
         Optional<Asignatura> asignatura = service.findById(id);
 
-        if(asignatura.isPresent()){
+        if (asignatura.isPresent()) {
             Asignatura a = asignatura.get();
             a.getReferentes().stream()
                     .filter(r -> r.getCodReferente().equals(cod_ref))
@@ -233,5 +233,20 @@ public class AsignaturaControlador {
             return ResponseEntity.ok(PostAsignaturaDTO.of(a));
         }
         return ResponseEntity.notFound().build();
+    }
+    @Operation(summary = "Elimina una asignatura por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado esa asignatura por su ID",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Asignatura.class))
+                    )}),
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAsignatura(@PathVariable Long id) {
+
+        Optional<Asignatura> asignaturaOptional = service.findById(id);
+        asignaturaOptional.ifPresent(service::deleteAsignatura);
+        return ResponseEntity.noContent().build();
     }
 }
