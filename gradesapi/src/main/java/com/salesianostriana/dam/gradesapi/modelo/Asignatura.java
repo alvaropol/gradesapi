@@ -43,5 +43,4 @@ public class Asignatura {
         referentes.removeIf(referenteEvaluacion -> referenteEvaluacion.getCodReferente().equalsIgnoreCase(codReferente));
     }
 
-
 }
