@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record PostInstrumentoDTO(
+
+        Long id,
         LocalDateTime fecha,
         String nombre,
         String contenidos,
