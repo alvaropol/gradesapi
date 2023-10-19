@@ -6,6 +6,7 @@ import com.salesianostriana.dam.gradesapi.modelo.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public record GetInstrumentoDTO(
 
@@ -43,11 +44,7 @@ public record GetInstrumentoDTO(
                 i.getContenidos().isEmpty() ? "Sin contenidos" : i.getContenidos(),
                 i.getAsignatura().getId(),
                 GetAsignaturaEnInstrumentoDTO.of(i.getAsignatura()),
-                i.getReferentes().stream()
-                        .map(r -> new GetReferenteEnAsignaturaDTO(
-                                r.getCodReferente(),
-                                r.getDescripcion()
-                        )).toList(),
+                i.getReferentes().stream().map(GetReferenteEnAsignaturaDTO::of).toList(),
                 i.getReferentes().size()
         );
     }
