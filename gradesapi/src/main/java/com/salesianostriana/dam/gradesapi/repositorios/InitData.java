@@ -1,45 +1,104 @@
 package com.salesianostriana.dam.gradesapi.repositorios;
 
-import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
-import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
-import com.salesianostriana.dam.gradesapi.modelo.Alumno;
-import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
-import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
-import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
+
+import com.salesianostriana.dam.gradesapi.modelo.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class InitData {
 
-    private final AlumnoServicio servicioAlumno;
-    private final AsignaturaServicio servicioAsignatura;
-
+    private final AlumnoRepositorio alumnoRepositorio;
+    private final AsignaturaRepositorio asignaturaRepositorio;
+    private final InstrumentoRepositorio instrumentoRepositorio;
 
     @PostConstruct
-    public void init(){
+    public void init() {
 
-        Alumno a1 = Alumno.builder()
-                .nombre("Ale")
-                .apellidos("Romero García")
-                .email("ale@gmail.com")
-                .telefono("987654321")
-                .fechaNacimiento(LocalDate.of(2000, 2,12))
+        Alumno alumno1 = Alumno.builder()
+                .nombre("Alfonso")
+                .apellidos("Perez García")
+                .email("alfonso@gmail.com")
+                .telefono("243785984")
+                .fechaNacimiento(LocalDate.of(2000,12,10))
                 .build();
 
-        Asignatura asignatura1 = Asignatura.builder()
-                        .horas(212)
-                        .nombre("Base de Datos")
-                        .descripcion("Asignatura de Base de Datos")
-                        .build();
+        Alumno alumno2 = Alumno.builder()
+                .nombre("Lucia")
+                .apellidos("Hermenegilda Palomares")
+                .email("luciah@gmail.com")
+                .telefono("663719829")
+                .fechaNacimiento(LocalDate.of(1992,2,5))
+                .build();
 
-        servicioAlumno.save(PostAlumnoDTO.of(a1));
 
-        servicioAsignatura.save(PostAsignaturaDTO.of(asignatura1));
+        Asignatura asignatura = Asignatura.builder()
+                .nombre("Base de Datos")
+                .horas(300)
+                .descripcion("Asignatura de base de datos SQL")
+                .referentes(new ArrayList<>())
+                .build();
+
+
+        ReferenteEvaluacion referente1 = new ReferenteEvaluacion(
+                asignatura,
+                "RA01.a",
+                "Conoce la teoría de la unidad"
+        );
+        asignatura.addReferente(referente1);
+
+
+        ReferenteEvaluacion referente2 = new ReferenteEvaluacion(
+                asignatura,
+                "RA01.b",
+                "Sabe manejar conceptos");
+        asignatura.addReferente(referente2);
+
+        ReferenteEvaluacion referente3 = new ReferenteEvaluacion(
+                asignatura,
+                "RA02.c",
+                "Sabe la teoría y aplicarla"
+        );
+        asignatura.addReferente(referente3);
+
+        asignaturaRepositorio.save(asignatura);
+
+
+        Instrumento instrumento1 = Instrumento.builder()
+                .nombre("Examen")
+                .fecha(LocalDateTime.now())
+                .asignatura(asignatura)
+                .referentes(new HashSet<>(asignatura.getReferentes()))
+                .contenidos("Examen sobre subconsultas en SQL, gestión y manejo de datos junto a conceptos de teoría")
+                .build();
+
+        instrumentoRepositorio.save(instrumento1);
+
+
+        Set<Asignatura> asignaturas1 = new HashSet<Asignatura>();
+
+        asignaturas1.add(asignatura);
+
+        alumno1.setAsignaturas(asignaturas1);
+        alumno2.setAsignaturas(asignaturas1);
+
+        alumnoRepositorio.save(alumno1);
+        asignaturaRepositorio.save(asignatura);
+        alumnoRepositorio.save(alumno1);
+
+        alumnoRepositorio.save(alumno2);
+        asignaturaRepositorio.save(asignatura);
+        alumnoRepositorio.save(alumno2);
+
     }
 }
