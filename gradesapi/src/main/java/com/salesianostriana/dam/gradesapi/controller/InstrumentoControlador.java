@@ -216,7 +216,7 @@ public class InstrumentoControlador {
     })
     @PutMapping("/{id}")
     @JsonView(InstrumentoView.Instrumento02.class)
-    public ResponseEntity<GetInstrumentoDTO> editAlumno(@PathVariable Long id, @RequestBody PostInstrumentoDTO editado){
+    public ResponseEntity<GetInstrumentoDTO> editInstrumento(@PathVariable Long id, @RequestBody PostInstrumentoDTO editado){
 
         return ResponseEntity.of(service.findById(id).map(
                 antiguo -> {
@@ -227,5 +227,22 @@ public class InstrumentoControlador {
                     return GetInstrumentoDTO.of(service.save(antiguo));
                 }));
     }
+
+    @Operation(summary = "Elimina un instrumento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado el instrumento por su ID",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Instrumento.class))
+                    )})
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteInstrumento(@PathVariable Long id){
+        if(service.existsById(id)){
+            service.deleteById(id);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

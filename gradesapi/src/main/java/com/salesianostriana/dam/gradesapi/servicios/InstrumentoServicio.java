@@ -2,7 +2,6 @@ package com.salesianostriana.dam.gradesapi.servicios;
 
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.GetInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.PostInstrumentoDTO;
-import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 import com.salesianostriana.dam.gradesapi.modelo.Instrumento;
 import com.salesianostriana.dam.gradesapi.modelo.ReferenteEvaluacion;
@@ -78,4 +77,13 @@ public class InstrumentoServicio {
     public Instrumento save(Instrumento i){
         return repositorio.save((i));
     }
+
+    public boolean existsById(Long id){
+        return repositorio.existsById(id);
+    }
+
+    public void deleteById(Long id){
+        repositorio.deleteById(id);
+    }
 }
+
