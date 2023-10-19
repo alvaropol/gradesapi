@@ -1,0 +1,96 @@
+package com.salesianostriana.dam.gradesapi.controller;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetCalificacionDTO;
+import com.salesianostriana.dam.gradesapi.dto.Calificacion.Mensaje;
+import com.salesianostriana.dam.gradesapi.dto.Calificacion.PostCalificacionDTO;
+import com.salesianostriana.dam.gradesapi.modelo.*;
+import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
+import com.salesianostriana.dam.gradesapi.servicios.CalificacionServicio;
+import com.salesianostriana.dam.gradesapi.servicios.InstrumentoServicio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/calificacion")
+@Tag(name = "Calificacion", description = "Controlador de calificacion")
+public class CalificacionControlador {
+
+    private final CalificacionServicio calificacionServicio;
+    private final AlumnoServicio alumnoServicio;
+    private final InstrumentoServicio instrumentoServicio;
+
+
+    @Operation(summary = "Añade una o varias calificaciones")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha creado la/s calificacion/es",
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Calificacion.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "idInstrumento": 1,
+                                                "nombre": "Examen",
+                                                "calificaciones": [
+                                                    {
+                                                        "id": 3,
+                                                        "codReferente": "RA01.a",
+                                                        "descripcion": "Conoce la teoría de la unidad",
+                                                        "calificacion": 7.3
+                                                    },
+                                                    {
+                                                        "id": 4,
+                                                        "codReferente": "RA01.b",
+                                                        "descripcion": "Sabe manejar conceptos",
+                                                        "calificacion": 5.0
+                                                    }
+                                                ]
+                                            }                                     
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "400",
+                    description = "Bad Request por parte del usuario",
+                    content = @Content),
+    })
+    @PostMapping("/")
+    @JsonView(CalificacionView.PostCalificacion.class)
+    public ResponseEntity<?> addCalificaciones(@RequestBody PostCalificacionDTO postCalificacionDTO) {
+
+        Optional<Alumno> alumno = alumnoServicio.findById(postCalificacionDTO.idAlumno());
+
+        if(alumno.isEmpty())
+            return ResponseEntity.badRequest().body(new Mensaje("No se puede crear la calificación. Compruebe que los datos del instrumento y los referentes son correctos"));
+
+        Optional<Instrumento> instrumento = instrumentoServicio.findById(postCalificacionDTO.idInstrumento());
+
+
+        if(instrumento.isEmpty())
+            return ResponseEntity.badRequest().body(new Mensaje("No se puede crear la calificación. Compruebe que los datos del instrumento y los referentes son correctos"));
+
+        GetCalificacionDTO calificaciones = calificacionServicio.addCalificaciones(postCalificacionDTO);
+
+        if (calificaciones!=null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(calificaciones);
+        } else {
+            return ResponseEntity.badRequest().body(new Mensaje("No se puede crear la calificación. Compruebe que los datos del instrumento y los referentes son correctos"));
+        }
+    }
+}
