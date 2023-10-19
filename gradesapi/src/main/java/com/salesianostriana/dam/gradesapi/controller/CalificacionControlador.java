@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.gradesapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetAlumnoEnCalificacionDTO;
 import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetCalificacionDTO;
 import com.salesianostriana.dam.gradesapi.dto.Calificacion.Mensaje;
 import com.salesianostriana.dam.gradesapi.dto.Calificacion.PostCalificacionDTO;
@@ -19,10 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -36,6 +34,74 @@ public class CalificacionControlador {
     private final AlumnoServicio alumnoServicio;
     private final InstrumentoServicio instrumentoServicio;
 
+
+
+    @Operation(summary = "Obtiene una lista de todas las calificaciones de un instrumento de evaluación de todos los alumnos calificados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Si se ha encontrado la lista de calificaciones de un instrumento para los alumnos calificados",
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Calificacion.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "idInstrumento": 1,
+                                                "nombre": "Examen",
+                                                "alumnos": [
+                                                    {
+                                                        "id": 2,
+                                                        "nombre": "Lucia",
+                                                        "apellidos": "Hermenegilda Palomares",
+                                                        "calificaciones": [
+                                                            {
+                                                                "codReferente": "RA01.a",
+                                                                "descripcion": "Conoce la teoría de la unidad",
+                                                                "calificacion": 7.3
+                                                            },
+                                                            {
+                                                                "codReferente": "RA01.b",
+                                                                "descripcion": "Sabe manejar conceptos",
+                                                                "calificacion": 5.0
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "id": 1,
+                                                        "nombre": "Alfonso",
+                                                        "apellidos": "Perez García",
+                                                        "calificaciones": [
+                                                            {
+                                                                "codReferente": "RA01.a",
+                                                                "descripcion": "Conoce la teoría de la unidad",
+                                                                "calificacion": 8.3
+                                                            },
+                                                            {
+                                                                "codReferente": "RA01.b",
+                                                                "descripcion": "Sabe manejar conceptos",
+                                                                "calificacion": 3.0
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }                                   
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ninguna asignatura con ese ID",
+                    content = @Content),
+    })
+    @GetMapping("/instrumento/{id}")
+    @JsonView(CalificacionView.CalificacionAlumno.class)
+    public ResponseEntity<GetAlumnoEnCalificacionDTO> getCalificacionesByInstrumento(@PathVariable Long id) {
+        GetAlumnoEnCalificacionDTO calificaciones = calificacionServicio.getCalificacionesByInstrumento(id);
+
+        if (calificaciones != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(calificaciones);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @Operation(summary = "Añade una o varias calificaciones")
     @ApiResponses(value = {
