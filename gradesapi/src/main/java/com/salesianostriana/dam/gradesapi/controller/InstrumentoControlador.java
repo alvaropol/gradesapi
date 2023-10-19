@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.GetInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.PostInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.*;
+import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
 import com.salesianostriana.dam.gradesapi.servicios.InstrumentoServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -22,6 +23,7 @@ import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,13 +33,14 @@ import java.util.stream.Collectors;
 public class InstrumentoControlador {
 
     private final InstrumentoServicio service;
+    private final AsignaturaServicio serviceAsignatura;
 
 
     @Operation(summary = "Obtiene una lista de todos los instrumentos de evaluación de una asignatura")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Si se ha encontrado la lista de instrumentos de esa asignatura",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Instrumento.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -67,19 +70,19 @@ public class InstrumentoControlador {
     })
     @GetMapping("/{id_asig}")
     @JsonView(InstrumentoView.Instrumento02.class)
-    public ResponseEntity<List<GetInstrumentoDTO>> findAll(@PathVariable Long id_asig){
+    public ResponseEntity<List<GetInstrumentoDTO>> findAll(@PathVariable Long id_asig) {
 
-            List<Instrumento> instrumentos = service.findAll();
+        List<Instrumento> instrumentos = service.findAll();
 
-            List<GetInstrumentoDTO> instrumentosDeEsaAsignatura = instrumentos.stream()
-                    .filter(instrumento -> instrumento.getAsignatura().getId().equals(id_asig))
-                    .map(GetInstrumentoDTO::of)
-                    .collect(Collectors.toList());
+        List<GetInstrumentoDTO> instrumentosDeEsaAsignatura = instrumentos.stream()
+                .filter(instrumento -> instrumento.getAsignatura().getId().equals(id_asig))
+                .map(GetInstrumentoDTO::of)
+                .collect(Collectors.toList());
 
-            if(!instrumentosDeEsaAsignatura.isEmpty()){
-                return ResponseEntity.ok(instrumentosDeEsaAsignatura);
+        if (!instrumentosDeEsaAsignatura.isEmpty()) {
+            return ResponseEntity.ok(instrumentosDeEsaAsignatura);
         }
-            return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build();
 
     }
 
@@ -88,7 +91,7 @@ public class InstrumentoControlador {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Si se ha encontrado ese instrumento con ese ID",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Instrumento.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -123,7 +126,7 @@ public class InstrumentoControlador {
     })
     @GetMapping("/detalle/{id}")
     @JsonView(InstrumentoView.Instrumento03.class)
-    public ResponseEntity<GetInstrumentoDTO> getById(@PathVariable Long id){
+    public ResponseEntity<GetInstrumentoDTO> getById(@PathVariable Long id) {
 
         Optional<Instrumento> instrumentoOptional = service.findById(id);
 
@@ -165,17 +168,25 @@ public class InstrumentoControlador {
     })
     @PostMapping("/")
     @JsonView(InstrumentoView.Instrumento01.class)
-    public ResponseEntity<GetInstrumentoDTO> addInstrumento(@RequestBody PostInstrumentoDTO dto){
+    public ResponseEntity<GetInstrumentoDTO> addInstrumento(@RequestBody PostInstrumentoDTO dto) {
 
-        if(dto!=null){
-            Optional<GetInstrumentoDTO> instrumentoOptional = service.postInstrumento(dto);
-            GetInstrumentoDTO getInstrumentoDTO = instrumentoOptional.get();
+        if (dto != null) {
+            Long idAsignatura = dto.idAsignatura();
+            Optional<Asignatura> asignaturaOptional = serviceAsignatura.findById(idAsignatura);
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(getInstrumentoDTO);
-        }else{
-            return ResponseEntity.badRequest().build();
+            if (asignaturaOptional.isPresent()) {
+                Asignatura asignatura = asignaturaOptional.get();
+
+                if (asignatura.getReferentes() != null && !asignatura.getReferentes().isEmpty()) {
+                    Optional<GetInstrumentoDTO> instrumentoOptional = service.postInstrumento(dto);
+                    GetInstrumentoDTO getInstrumentoDTO = instrumentoOptional.get();
+
+                    return ResponseEntity
+                            .status(HttpStatus.CREATED)
+                            .body(getInstrumentoDTO);
+                }
+            }
         }
+            return ResponseEntity.badRequest().build();
     }
 }

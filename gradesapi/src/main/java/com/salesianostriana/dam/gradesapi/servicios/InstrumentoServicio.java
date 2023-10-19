@@ -11,11 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,5 +67,10 @@ public class InstrumentoServicio {
 
     public Optional<Instrumento> findById(Long id){
         return repositorio.findById(id);
+    }
+
+    @Transactional
+    public void deleteInstrumentosDeUnaAsignatura(Asignatura asignatura) {
+        repositorio.deleteByAsignatura(asignatura);
     }
 }

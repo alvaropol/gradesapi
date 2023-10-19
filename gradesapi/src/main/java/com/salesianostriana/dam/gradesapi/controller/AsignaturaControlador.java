@@ -7,6 +7,7 @@ import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetReferenteEnAsignatur
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.modelo.*;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
+import com.salesianostriana.dam.gradesapi.servicios.InstrumentoServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 public class AsignaturaControlador {
 
     private final AsignaturaServicio service;
+    private final InstrumentoServicio serviceInstrumento;
 
 
     @Operation(summary = "Obtiene una lista de todas las asignaturas")
@@ -246,6 +248,8 @@ public class AsignaturaControlador {
     public ResponseEntity<?> deleteAsignatura(@PathVariable Long id) {
 
         Optional<Asignatura> asignaturaOptional = service.findById(id);
+        Asignatura asignatura = asignaturaOptional.get();
+        serviceInstrumento.deleteInstrumentosDeUnaAsignatura(asignatura);
         asignaturaOptional.ifPresent(service::deleteAsignatura);
         return ResponseEntity.noContent().build();
     }
