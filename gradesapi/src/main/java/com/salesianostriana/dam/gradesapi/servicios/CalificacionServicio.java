@@ -1,10 +1,8 @@
 package com.salesianostriana.dam.gradesapi.servicios;
 
-import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetAlumnoEnCalificacionDTO;
-import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetCalificacionDTO;
-import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetUnidadAlumnoDTO;
-import com.salesianostriana.dam.gradesapi.dto.Calificacion.PostCalificacionDTO;
+import com.salesianostriana.dam.gradesapi.dto.Calificacion.*;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
+import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 import com.salesianostriana.dam.gradesapi.modelo.Calificacion;
 import com.salesianostriana.dam.gradesapi.modelo.Instrumento;
 import com.salesianostriana.dam.gradesapi.repositorios.CalificacionRepositorio;
@@ -24,6 +22,7 @@ public class CalificacionServicio {
     private final CalificacionRepositorio repositorio;
     private final InstrumentoServicio instrumentoService;
     private final AlumnoServicio alumnoService;
+    private final AsignaturaServicio asignaturaService;
 
 
     public Optional<Calificacion> findById(Long id){return repositorio.findById(id);}
@@ -31,11 +30,7 @@ public class CalificacionServicio {
     public GetCalificacionDTO addCalificaciones(PostCalificacionDTO nuevo) {
         Instrumento instrumento = instrumentoService.findById(nuevo.idInstrumento()).orElse(null);
         Alumno alumno = alumnoService.findById(nuevo.idAlumno()).orElse(null);
-
-        if (alumno == null || instrumento == null) {
-            return null;
-        }
-
+        
         List<Calificacion> calificaciones = nuevo.calificaciones().stream()
                 .filter(calificacionDTO -> instrumento.getReferentes().stream()
                         .anyMatch(referente -> referente.getCodReferente().equals(calificacionDTO.codReferente())))
@@ -92,6 +87,44 @@ public class CalificacionServicio {
                 resultado
         );
     }
+
+    public GetAlumnoEnCalificacion02DTO getCalificacionesByReferente(Long idAsignatura, String codReferente) {
+        List<Calificacion> calificaciones = repositorio.findByInstrumentoReferentesCodReferente(idAsignatura, codReferente);
+
+
+        List<GetUnidadAlumno02DTO> alumnos = new ArrayList<>();
+
+        for (Calificacion calificacion : calificaciones) {
+            Alumno alumno = calificacion.getAlumno();
+            GetUnidadAlumno02DTO unidadAlumno = null;
+
+            for (GetUnidadAlumno02DTO a : alumnos) {
+                if (a.id().equals(alumno.getId())) {
+                    unidadAlumno = a;
+                    break;
+                }
+            }
+
+            if (unidadAlumno == null) {
+                unidadAlumno = new GetUnidadAlumno02DTO(
+                        alumno.getId(),
+                        alumno.getNombre(),
+                        alumno.getApellidos(),
+                        new ArrayList<>()
+                );
+                alumnos.add(unidadAlumno);
+            }
+
+            unidadAlumno.calificaciones().add(new GetCalificacionesInstrumentoDTO(
+                    calificacion.getInstrumento().getId(),
+                    calificacion.getCalificacion()
+            ));
+        }
+
+        return new GetAlumnoEnCalificacion02DTO(idAsignatura, codReferente, alumnos);
+    }
+
+
 }
 
 

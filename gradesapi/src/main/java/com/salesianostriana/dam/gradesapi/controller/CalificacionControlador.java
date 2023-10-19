@@ -1,10 +1,7 @@
 package com.salesianostriana.dam.gradesapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetAlumnoEnCalificacionDTO;
-import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetCalificacionDTO;
-import com.salesianostriana.dam.gradesapi.dto.Calificacion.Mensaje;
-import com.salesianostriana.dam.gradesapi.dto.Calificacion.PostCalificacionDTO;
+import com.salesianostriana.dam.gradesapi.dto.Calificacion.*;
 import com.salesianostriana.dam.gradesapi.modelo.*;
 import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
 import com.salesianostriana.dam.gradesapi.servicios.CalificacionServicio;
@@ -35,6 +32,51 @@ public class CalificacionControlador {
     private final InstrumentoServicio instrumentoServicio;
 
 
+    @Operation(summary = "Obtiene una lista de todas las calificaciones de un referente de evaluación para los alumnos calificados en dicho referente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Si se ha encontrado dicha lista de calificaciones por el id de asignatura y el codReferente de esta última",
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Calificacion.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "idAsignatura": 1,
+                                                "codReferente": "RA01.a",
+                                                "alumnos": [
+                                                    {
+                                                        "id": 1,
+                                                        "nombre": "Alfonso",
+                                                        "apellidos": "Perez García",
+                                                        "calificaciones": [
+                                                            {
+                                                                "idInstrumento": 1,
+                                                                "calificacion": 7.3
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }                            
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ninguna asignatura o referente con los datos pasados",
+                    content = @Content),
+    })
+    @GetMapping("/{idAsignatura}/{codReferente}")
+    public ResponseEntity<?> getCalificacionesByReferente(
+            @PathVariable Long idAsignatura,
+            @PathVariable String codReferente
+    ) {
+        GetAlumnoEnCalificacion02DTO calificaciones = calificacionServicio.getCalificacionesByReferente(idAsignatura, codReferente);
+
+        if (calificaciones != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(calificaciones);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @Operation(summary = "Obtiene una lista de todas las calificaciones de un instrumento de evaluación de todos los alumnos calificados")
     @ApiResponses(value = {
