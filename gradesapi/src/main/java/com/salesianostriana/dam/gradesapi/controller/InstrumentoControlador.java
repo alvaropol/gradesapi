@@ -316,4 +316,41 @@ public class InstrumentoControlador {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Elimina un referente en un instrumento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado ese referente en ese instrumento",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Instrumento.class))
+                    )}),
+            @ApiResponse(responseCode = "400",
+                    description = "Bad Request por parte del usuario",
+                    content = @Content),
+    })
+    @DeleteMapping("/{id}/referente/{cod_ref}")
+    public ResponseEntity<?> eliminarReferenteDeInstrumento(@PathVariable Long id, @PathVariable String cod_ref) {
+        Optional<Instrumento> instrumentoOptional = service.findById(id);
+
+        if (instrumentoOptional.isPresent()) {
+            Instrumento instrumento = instrumentoOptional.get();
+            Asignatura asignatura = instrumento.getAsignatura();
+
+            boolean referenteExistente = asignatura.getReferentes().stream()
+                    .anyMatch(r -> r.getCodReferente().equals(cod_ref));
+
+            if (referenteExistente) {
+                ReferenteEvaluacion referente = asignatura.getReferentes().stream()
+                        .filter(r -> r.getCodReferente().equals(cod_ref))
+                        .findFirst()
+                        .orElse(null);
+
+                if (referente != null) {
+                    instrumento.getReferentes().remove(referente);
+                    service.save(instrumento);
+                    return ResponseEntity.noContent().build();
+                }
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
