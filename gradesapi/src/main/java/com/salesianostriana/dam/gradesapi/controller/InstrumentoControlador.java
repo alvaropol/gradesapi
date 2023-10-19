@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.GetInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.PostInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.*;
-import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
 import com.salesianostriana.dam.gradesapi.servicios.InstrumentoServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 public class InstrumentoControlador {
 
     private final InstrumentoServicio service;
-    private final AsignaturaServicio serviceAsignatura;
 
 
     @Operation(summary = "Obtiene una lista de todos los instrumentos de evaluación de una asignatura")
@@ -83,6 +81,53 @@ public class InstrumentoControlador {
         }
             return ResponseEntity.notFound().build();
 
+    }
+
+
+    @Operation(summary = "Obtiene el detalle de un instrumento por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Si se ha encontrado ese instrumento con ese ID",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Instrumento.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            [
+                                                 {
+                                                     "id": 1,
+                                                     "fecha": "2023-11-09T11:44:30",
+                                                     "nombre": "Proyecto",
+                                                     "contenidos": "Proyecto de creación de API REST",
+                                                     "asignatura": {
+                                                         "id": 1,
+                                                         "nombre": "Base de Datos"
+                                                     },
+                                                     "referentes": [
+                                                         {
+                                                             "codReferente": "RA01.b",
+                                                             "descripcion": "El alumno sabe hacer subconsultas"
+                                                         },
+                                                         {
+                                                             "codReferente": "RA01.a",
+                                                             "descripcion": "El alumno sabeeee comandos de base de datos"
+                                                         }
+                                                     ]
+                                                 }
+                                            ]                                          
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ningun instrumento con ese ID",
+                    content = @Content),
+    })
+    @GetMapping("/detalle/{id}")
+    @JsonView(InstrumentoView.Instrumento03.class)
+    public ResponseEntity<GetInstrumentoDTO> getById(@PathVariable Long id){
+
+        Optional<Instrumento> instrumentoOptional = service.findById(id);
+
+        return instrumentoOptional.map(instrumento -> ResponseEntity.ok(GetInstrumentoDTO.of(instrumento))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 

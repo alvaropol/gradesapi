@@ -27,42 +27,49 @@ public class InstrumentoServicio {
     @Transactional
     public Optional<GetInstrumentoDTO> postInstrumento(PostInstrumentoDTO nuevo) {
 
-       if (repositorioAsignatura.findById(nuevo.idAsignatura()).isPresent()) {
-            Set<ReferenteEvaluacion> referentes = new HashSet<>();
+        if (repositorioAsignatura.findById(nuevo.idAsignatura()).isPresent()) {
 
-            nuevo.referentes().forEach(referente-> {
+            if (!repositorioAsignatura.findById(nuevo.idAsignatura()).get().getReferentes().isEmpty()) {
+                Set<ReferenteEvaluacion> referentes = new HashSet<>();
 
-                        if (!referentes.add(
-                                repositorioAsignatura
-                                        .getReferenceById(nuevo.idAsignatura())
-                                        .getReferentes()
-                                        .stream()
-                                        .filter(referenteEvaluacion -> referenteEvaluacion.getCodReferente()
-                                                .equalsIgnoreCase(referente))
-                                        .findFirst()
-                                        .get())) {
-                            Optional.empty();
-                        }
-                    });
+                nuevo.referentes().forEach(referente -> {
 
-            Instrumento ins = new Instrumento(
-                    nuevo.id(),
-                    nuevo.nombre(),
-                    nuevo.fecha(),
-                    nuevo.contenidos(),
-                    repositorioAsignatura.getReferenceById(nuevo.idAsignatura()),
-                    referentes
-            );
+                    if (!referentes.add(
+                            repositorioAsignatura
+                                    .getReferenceById(nuevo.idAsignatura())
+                                    .getReferentes()
+                                    .stream()
+                                    .filter(referenteEvaluacion -> referenteEvaluacion.getCodReferente()
+                                            .equalsIgnoreCase(referente))
+                                    .findFirst()
+                                    .get())) {
+                        Optional.empty();
+                    }
+                });
 
-            repositorio.save(ins);
-            return Optional.of(GetInstrumentoDTO.of(ins));
+                Instrumento ins = new Instrumento(
+                        nuevo.id(),
+                        nuevo.nombre(),
+                        nuevo.fecha(),
+                        nuevo.contenidos(),
+                        repositorioAsignatura.getReferenceById(nuevo.idAsignatura()),
+                        referentes
+                );
 
-        }else{
-           return Optional.empty();
-       }
+                repositorio.save(ins);
+                return Optional.of(GetInstrumentoDTO.of(ins));
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
     }
-
     public List<Instrumento> findAll(){
         return repositorio.findAll();
+    }
+
+    public Optional<Instrumento> findById(Long id){
+        return repositorio.findById(id);
     }
 }
