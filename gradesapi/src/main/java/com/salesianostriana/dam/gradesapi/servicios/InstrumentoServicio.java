@@ -2,6 +2,7 @@ package com.salesianostriana.dam.gradesapi.servicios;
 
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.GetInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.PostInstrumentoDTO;
+import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 import com.salesianostriana.dam.gradesapi.modelo.Instrumento;
 import com.salesianostriana.dam.gradesapi.modelo.ReferenteEvaluacion;
@@ -72,5 +73,9 @@ public class InstrumentoServicio {
     @Transactional
     public void deleteInstrumentosDeUnaAsignatura(Asignatura asignatura) {
         repositorio.deleteByAsignatura(asignatura);
+    }
+
+    public Instrumento save(Instrumento i){
+        return repositorio.save((i));
     }
 }

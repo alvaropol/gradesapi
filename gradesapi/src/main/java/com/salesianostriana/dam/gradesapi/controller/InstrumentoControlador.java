@@ -1,6 +1,8 @@
 package com.salesianostriana.dam.gradesapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.GetInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.PostInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.*;
@@ -189,4 +191,41 @@ public class InstrumentoControlador {
         }
             return ResponseEntity.badRequest().build();
     }
+
+    @Operation(summary = "Edita un instrumento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha editado ese instrumento",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Instrumento.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "id": 1,
+                                                "fecha": "2023-11-09T11:44:30",
+                                                "nombre": "Proyecto editado",
+                                                "contenidos": "Proyecto de creación de API REST editado",
+                                                "numeroReferentes": 2
+                                            }                                        
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ese instrumento con ese ID",
+                    content = @Content),
+    })
+    @PutMapping("/{id}")
+    @JsonView(InstrumentoView.Instrumento02.class)
+    public ResponseEntity<GetInstrumentoDTO> editAlumno(@PathVariable Long id, @RequestBody PostInstrumentoDTO editado){
+
+        return ResponseEntity.of(service.findById(id).map(
+                antiguo -> {
+                    antiguo.setNombre(editado.nombre());
+                    antiguo.setFecha(editado.fecha());
+                    antiguo.setContenidos(editado.contenidos());
+
+                    return GetInstrumentoDTO.of(service.save(antiguo));
+                }));
+    }
+
 }
