@@ -35,6 +35,38 @@ public class InstrumentoControlador {
     private final AsignaturaServicio serviceAsignatura;
 
 
+    @Operation(summary = "Obtiene una lista de todos los instrumentos de evaluación de una asignatura")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Si se ha encontrado la lista de instrumentos de esa asignatura",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Instrumento.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            [
+                                                 {
+                                                        "id": 1,
+                                                        "fecha": "2023-11-09T11:44:30",
+                                                        "nombre": "Proyecto",
+                                                        "contenidos": "Proyecto de creación de API REST",
+                                                        "numeroReferentes": 2
+                                                    },
+                                                    
+                                                     {
+                                                            "id": 2,
+                                                            "fecha": "2023-12-16T10:23:37",
+                                                            "nombre": "Examen",
+                                                            "contenidos": "Examen de programación",
+                                                            "numeroReferentes": 2
+                                                        }
+                                            ]                                          
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ninguna asignatura con ese ID",
+                    content = @Content),
+    })
     @GetMapping("/{id_asig}")
     @JsonView(InstrumentoView.Instrumento02.class)
     public ResponseEntity<List<GetInstrumentoDTO>> findAll(@PathVariable Long id_asig){
