@@ -3,6 +3,7 @@ package com.salesianostriana.dam.gradesapi.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.GetInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.PostInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.*;
@@ -244,5 +245,75 @@ public class InstrumentoControlador {
         return ResponseEntity.noContent().build();
     }
 
+
+    @Operation(summary = "Añade un referente de evaluación a un instrumento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha añadido ese referente a ese instrumento",
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Instrumento.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "id": 1,
+                                                "nombre": "Base de Datos",
+                                                "horas": 212,
+                                                "descripcion": "Asignatura de Base de Datos",
+                                                "referentes": [
+                                                    {
+                                                        "codReferente": "RA01.a",
+                                                        "descripcion": "El alumno sabeeee comandos de base de datos"
+                                                    },
+                                                    {
+                                                        "codReferente": "RA01.b",
+                                                        "descripcion": "El alumno sabe hacer subconsultas"
+                                                    },
+                                                    {
+                                                        "codReferente": "RA01.c",
+                                                        "descripcion": "El alumno define conceptos"
+                                                    }
+                                                ]
+                                            }                                       
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "400",
+                    description = "Bad Request por parte del usuario",
+                    content = @Content),
+    })
+    @PostMapping("/{id}/referente/{cod_ref}")
+    public ResponseEntity<GetInstrumentoDTO> addReferenteEnInstrumento(@PathVariable Long id,@PathVariable String cod_ref) {
+
+        Optional<Instrumento> instrumentoOptional = service.findById(id);
+
+        if (instrumentoOptional.isPresent()) {
+
+            Instrumento instrumento = instrumentoOptional.get();
+            Asignatura asignatura = instrumento.getAsignatura();
+
+            boolean referenteExistente = asignatura.getReferentes().stream()
+                    .anyMatch(r -> r.getCodReferente().equals(cod_ref));
+
+            if (referenteExistente) {
+                ReferenteEvaluacion referente = asignatura.getReferentes().stream()
+                        .filter(r -> r.getCodReferente().equals(cod_ref))
+                        .findFirst()
+                        .orElse(null);
+
+                if (referente != null) {
+                    instrumento.getReferentes().add(referente);
+                    service.save(instrumento);
+
+                    Instrumento instrumentoActualizado = service.findById(id).orElse(null);
+
+                    if (instrumentoActualizado != null) {
+                        GetInstrumentoDTO instrumentoDTO = GetInstrumentoDTO.of(instrumentoActualizado);
+                        return ResponseEntity.status(HttpStatus.CREATED).body(instrumentoDTO);
+                    }
+                }
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 }
