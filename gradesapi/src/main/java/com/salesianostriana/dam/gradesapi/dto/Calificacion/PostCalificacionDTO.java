@@ -20,11 +20,11 @@ public record PostCalificacionDTO(
         public record CalificacionDTO(
                 @JsonView(CalificacionView.PostCalificacion.class)
                 Long id,
-                @JsonView(CalificacionView.PostCalificacion.class)
+                @JsonView({CalificacionView.PostCalificacion.class,CalificacionView.CalificacionAlumno.class})
                 String codReferente,
-                @JsonView(CalificacionView.PostCalificacion.class)
+                @JsonView({CalificacionView.PostCalificacion.class,CalificacionView.CalificacionAlumno.class})
                 String descripcion,
-                @JsonView(CalificacionView.PostCalificacion.class)
+                @JsonView({CalificacionView.PostCalificacion.class,CalificacionView.CalificacionAlumno.class})
                 double calificacion
         ) {
 

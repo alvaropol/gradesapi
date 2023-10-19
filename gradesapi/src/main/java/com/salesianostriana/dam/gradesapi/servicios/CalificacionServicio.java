@@ -1,6 +1,8 @@
 package com.salesianostriana.dam.gradesapi.servicios;
 
+import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetAlumnoEnCalificacionDTO;
 import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetCalificacionDTO;
+import com.salesianostriana.dam.gradesapi.dto.Calificacion.GetUnidadAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Calificacion.PostCalificacionDTO;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
 import com.salesianostriana.dam.gradesapi.modelo.Calificacion;
@@ -12,9 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,6 +61,39 @@ public class CalificacionServicio {
                         .collect(Collectors.toList())
         );
     }
+
+    public GetAlumnoEnCalificacionDTO getCalificacionesByInstrumento(Long idInstrumento) {
+        List<Calificacion> calificaciones = repositorio.findByInstrumentoId(idInstrumento);
+
+        Optional<Instrumento> instrumento = instrumentoService.findById(idInstrumento);
+
+        Instrumento ins = instrumento.get();
+
+        List<GetUnidadAlumnoDTO> resultado = calificaciones.stream()
+                .collect(Collectors.groupingBy(Calificacion::getAlumno))
+                .values()
+                .stream()
+                .map(calificacionesAlumno -> {
+                    Alumno alumno = calificacionesAlumno.get(0).getAlumno();
+                    return new GetUnidadAlumnoDTO(
+                            alumno.getId(),
+                            alumno.getNombre(),
+                            alumno.getApellidos(),
+                            calificacionesAlumno.stream()
+                                    .map(PostCalificacionDTO.CalificacionDTO::of)
+                                    .collect(Collectors.toList())
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return new GetAlumnoEnCalificacionDTO(
+                ins.getId(),
+                ins.getNombre(),
+                resultado
+        );
+    }
 }
+
+
 
 
