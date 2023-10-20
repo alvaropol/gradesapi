@@ -6,6 +6,7 @@ import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetReferenteEnAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.modelo.*;
+import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
 import com.salesianostriana.dam.gradesapi.servicios.InstrumentoServicio;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -33,6 +35,7 @@ public class AsignaturaControlador {
 
     private final AsignaturaServicio service;
     private final InstrumentoServicio serviceInstrumento;
+    private final AlumnoServicio serviceAlumno;
 
 
     @Operation(summary = "Obtiene una lista de todas las asignaturas")

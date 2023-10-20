@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface CalificacionRepositorio extends JpaRepository<Calificacion, Long> {
     List<Calificacion> findByInstrumentoId(Long idInstrumento);
+    List<Calificacion> findByAlumnoId(Long idAlumno);
 
     @Query("SELECT c FROM Calificacion c " +
             "WHERE c.instrumento.id = :idAsignatura " +

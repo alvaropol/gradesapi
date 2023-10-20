@@ -8,6 +8,7 @@ import com.salesianostriana.dam.gradesapi.dto.Instrumento.GetInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Instrumento.PostInstrumentoDTO;
 import com.salesianostriana.dam.gradesapi.modelo.*;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
+import com.salesianostriana.dam.gradesapi.servicios.CalificacionServicio;
 import com.salesianostriana.dam.gradesapi.servicios.InstrumentoServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -37,7 +38,7 @@ public class InstrumentoControlador {
 
     private final InstrumentoServicio service;
     private final AsignaturaServicio serviceAsignatura;
-
+    private final CalificacionServicio serviceCalificacion;
 
     @Operation(summary = "Obtiene una lista de todos los instrumentos de evaluación de una asignatura")
     @ApiResponses(value = {
@@ -240,6 +241,18 @@ public class InstrumentoControlador {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteInstrumento(@PathVariable Long id){
         if(service.existsById(id)){
+            Optional<Instrumento> instrumentoOptional = service.findById(id);
+            Instrumento ins = instrumentoOptional.get();
+            List<Calificacion> calificacionesEnInstrumento = serviceCalificacion.findByInstrumentoId(id);
+
+            calificacionesEnInstrumento = calificacionesEnInstrumento.stream()
+                            .filter(calificacion -> calificacion.getInstrumento().getId().equals(ins.getId()))
+                                    .toList();
+
+            calificacionesEnInstrumento.forEach(calificacion -> {
+                serviceCalificacion.deleteById(calificacion.getId());
+            });
+
             service.deleteById(id);
         }
         return ResponseEntity.noContent().build();
