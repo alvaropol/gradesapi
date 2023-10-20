@@ -66,7 +66,7 @@ public class InitData {
 
         ReferenteEvaluacion referente3 = new ReferenteEvaluacion(
                 asignatura,
-                "RA02.c",
+                "RA01.c",
                 "Sabe la teoría y aplicarla"
         );
         asignatura.addReferente(referente3);
