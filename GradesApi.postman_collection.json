@@ -1,0 +1,625 @@
+{
+	"info": {
+		"_postman_id": "42ed40aa-1d90-483e-9006-a49b45398435",
+		"name": "GradesApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30052626"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "Alumno findAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/alumno/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"alumno",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alumno findById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/alumno/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"alumno",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignatura findAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/asignatura/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"asignatura",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignatura findById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/asignatura/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"asignatura",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Instrumento getByIdAsignatura",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/instrumento/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"instrumento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Instrumento findById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/instrumento/detalle/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"instrumento",
+								"detalle",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calificacion getCalificacionInstrumento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/calificacion/instrumento/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"calificacion",
+								"instrumento",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calificacion getCalificacionAsignaturaReferente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/calificacion/2/AD01.a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"calificacion",
+								"2",
+								"AD01.a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "Alumno crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"nombre\": \"nuevoAlumno\",\r\n        \"apellidos\": \"Romero García\",\r\n        \"email\": \"aleeditado@gmail.com\",\r\n        \"telefono\": \"987654321\",\r\n        \"fechaNacimiento\": \"1995-10-21\",\r\n        \"cantidadAsignaturas\": 0\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/alumno/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"alumno",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignatura crear",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"nombre\": \"Sistemas informáticos\",\r\n        \"horas\": 100,\r\n        \"descripcion\": \"Asignatura de Sistemas informáticos\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/asignatura/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"asignatura",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignatura crear Referente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n[\r\n        {\"codReferente\": \"RA01.a\", \"descripcion\": \"El alumno sabeeee comandos de base de datos\"},\r\n        {\"codReferente\": \"RA01.b\", \"descripcion\": \"El alumno sabe hacer subconsultas\"},\r\n        {\"codReferente\": \"RA01.c\", \"descripcion\": \"El alumno define conceptos\"}\r\n    \r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/asignatura/1/referente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"asignatura",
+								"1",
+								"referente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alumno add Asignatura",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/alumno/1/matricula/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"alumno",
+								"1",
+								"matricula",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Instrumento Add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fecha\": \"2023-11-09T11:44:30\", \r\n    \"nombre\": \"Proyecto\", \r\n    \"contenidos\": \"Proyecto de creación de API REST\", \r\n    \"idAsignatura\": 1, \r\n    \"referentes\": [\"AD01.a\", \"AD01.b\"]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/instrumento/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"instrumento",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Instrumento addReferente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/instrumento/1/referente/AD01.c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"instrumento",
+								"1",
+								"referente",
+								"AD01.c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Calificacion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n        \"idInstrumento\": 1, \"idAlumno\": 2, \r\n     \"calificaciones\": [\r\n         {\"codReferente\": \"BD01.a\", \"calificacion\": 9},\r\n         {\"codReferente\": \"BD01.b\", \"calificacion\": 3.5} \r\n         ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/calificacion/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"calificacion",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PUT",
+			"item": [
+				{
+					"name": "Alumno edit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"nombre\": \"Editado234\",\r\n        \"apellidos\": \"Lopez García\",\r\n        \"email\": \"fernandito@gmail.com\",\r\n        \"telefono\": \"423442343\",\r\n        \"fechaNacimiento\": \"1995-10-21\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/alumno/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"alumno",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignatura edit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"nombre\": \"Base de Datos editado\",\r\n        \"horas\": 212,\r\n        \"descripcion\": \"Asignatura de Base de Datos 2023-2024\"\r\n    }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/asignatura/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"asignatura",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignatura edit descripcionReferente",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"descripcion\": \"Define que es una API REST editadoooo\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/asignatura/1/referente/AD01.a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"asignatura",
+								"1",
+								"referente",
+								"AD01.a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Instrumento edit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fecha\": \"2023-11-09T11:44:30\", \r\n    \"nombre\": \"Proyecto editado\", \r\n    \"contenidos\": \"Proyecto de creación de API REST editado\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/instrumento/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"instrumento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE",
+			"item": [
+				{
+					"name": "Alumno delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/alumno/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"alumno",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alumno deleteAsignatura",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/alumno/1/matricula/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"alumno",
+								"1",
+								"matricula",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignatura delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/asignatura/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"asignatura",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Instrumento delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/instrumento/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"instrumento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Instrumento deleteReferente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/instrumento/1/referente/AD01.b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"instrumento",
+								"1",
+								"referente",
+								"AD01.b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calificacion delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/calificacion/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"calificacion",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

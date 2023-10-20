@@ -1,9 +1,7 @@
 package com.salesianostriana.dam.gradesapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetAsignaturaDTO;
-import com.salesianostriana.dam.gradesapi.dto.Asignatura.GetReferenteEnAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.dto.Asignatura.PostAsignaturaDTO;
 import com.salesianostriana.dam.gradesapi.modelo.*;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
@@ -33,7 +31,6 @@ public class AsignaturaControlador {
 
     private final AsignaturaServicio service;
     private final InstrumentoServicio serviceInstrumento;
-
 
     @Operation(summary = "Obtiene una lista de todas las asignaturas")
     @ApiResponses(value = {
