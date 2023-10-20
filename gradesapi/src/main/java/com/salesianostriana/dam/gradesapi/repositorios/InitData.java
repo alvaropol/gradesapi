@@ -21,6 +21,7 @@ public class InitData {
     private final AlumnoRepositorio alumnoRepositorio;
     private final AsignaturaRepositorio asignaturaRepositorio;
     private final InstrumentoRepositorio instrumentoRepositorio;
+    private final CalificacionRepositorio calificacionRepositorio;
 
     @PostConstruct
     public void init() {
@@ -41,18 +42,57 @@ public class InitData {
                 .fechaNacimiento(LocalDate.of(1992,2,5))
                 .build();
 
+        Alumno alumno3 = Alumno.builder()
+                .nombre("Antonio")
+                .apellidos("Lopez Dominguez")
+                .email("antonio@gmail.com")
+                .telefono("223119233")
+                .fechaNacimiento(LocalDate.of(2003,8,28))
+                .build();
+
 
         Asignatura asignatura = Asignatura.builder()
                 .nombre("Base de Datos")
-                .horas(300)
+                .horas(290)
                 .descripcion("Asignatura de base de datos SQL")
                 .referentes(new ArrayList<>())
                 .build();
 
+        Asignatura asignatura2 = Asignatura.builder()
+                .nombre("Acceso a Datos")
+                .horas(320)
+                .descripcion("Asignatura de acceso a datos")
+                .referentes(new ArrayList<>())
+                .build();
+
+        ReferenteEvaluacion referenteA2_1 = new ReferenteEvaluacion(
+                asignatura2,
+                "AD01.a",
+                "Define que es una API REST"
+        );
+        asignatura2.addReferente(referenteA2_1);
+
+        ReferenteEvaluacion referenteA2_2 = new ReferenteEvaluacion(
+                asignatura2,
+                "AD01.b",
+                "Conoce conceptos para la creacion de API REST"
+        );
+        asignatura2.addReferente(referenteA2_2);
+
+        ReferenteEvaluacion referenteA2_3 = new ReferenteEvaluacion(
+                asignatura2,
+                "AD01.c",
+                "Sabe gestiona una coleccion POSTMAN"
+        );
+        asignatura2.addReferente(referenteA2_3);
+
+        asignaturaRepositorio.save(asignatura2);
+
+
 
         ReferenteEvaluacion referente1 = new ReferenteEvaluacion(
                 asignatura,
-                "RA01.a",
+                "BD01.a",
                 "Conoce la teoría de la unidad"
         );
         asignatura.addReferente(referente1);
@@ -60,14 +100,15 @@ public class InitData {
 
         ReferenteEvaluacion referente2 = new ReferenteEvaluacion(
                 asignatura,
-                "RA01.b",
+                "BD01.b",
                 "Sabe manejar conceptos");
         asignatura.addReferente(referente2);
 
         ReferenteEvaluacion referente3 = new ReferenteEvaluacion(
                 asignatura,
-                "RA01.c",
+                "BD01.c",
                 "Sabe la teoría y aplicarla"
+
         );
         asignatura.addReferente(referente3);
 
@@ -84,21 +125,48 @@ public class InitData {
 
         instrumentoRepositorio.save(instrumento1);
 
+        Instrumento instrumento2 = Instrumento.builder()
+                .nombre("Ejercicio de evaluacion DTO/JsonView")
+                .fecha(LocalDateTime.now())
+                .asignatura(asignatura2)
+                .referentes(new HashSet<>(asignatura2.getReferentes()))
+                .contenidos("Ejercicio que comprueba si el alumno sabe gestionar DTO y JSONVIEW")
+                .build();
 
-        Set<Asignatura> asignaturas1 = new HashSet<Asignatura>();
+        instrumentoRepositorio.save(instrumento2);
 
-        asignaturas1.add(asignatura);
 
-        alumno1.setAsignaturas(asignaturas1);
-        alumno2.setAsignaturas(asignaturas1);
+        Set<Asignatura> asignaturas = new HashSet<Asignatura>();
+
+        asignaturas.add(asignatura);
+        asignaturas.add(asignatura2);
+
+        alumno1.setAsignaturas(asignaturas);
+        alumno2.setAsignaturas(asignaturas);
+        alumno3.setAsignaturas(asignaturas);
 
         alumnoRepositorio.save(alumno1);
         asignaturaRepositorio.save(asignatura);
+        asignaturaRepositorio.save(asignatura2);
         alumnoRepositorio.save(alumno1);
 
         alumnoRepositorio.save(alumno2);
         asignaturaRepositorio.save(asignatura);
+        asignaturaRepositorio.save(asignatura2);
         alumnoRepositorio.save(alumno2);
+
+        alumnoRepositorio.save(alumno3);
+        asignaturaRepositorio.save(asignatura);
+        asignaturaRepositorio.save(asignatura2);
+        alumnoRepositorio.save(alumno3);
+
+        Calificacion calificacion1 = Calificacion.builder()
+                .instrumento(instrumento2)
+                .referente(referenteA2_1)
+                .alumno(alumno1)
+                .build();
+
+        calificacionRepositorio.save(calificacion1);
 
     }
 }

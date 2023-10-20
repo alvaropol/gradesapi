@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
-import com.salesianostriana.dam.gradesapi.modelo.Alumno;
-import com.salesianostriana.dam.gradesapi.modelo.AlumnoView;
-import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
+import com.salesianostriana.dam.gradesapi.modelo.*;
 import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
+import com.salesianostriana.dam.gradesapi.servicios.CalificacionServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,6 +32,7 @@ public class AlumnoControlador {
 
     private final AlumnoServicio service;
     private final AsignaturaServicio serviceAsignatura;
+    private final CalificacionServicio serviceCalificacion;
 
 
     @Operation(summary = "Obtiene una lista de todos los alumnos")
@@ -232,6 +232,18 @@ public class AlumnoControlador {
     public ResponseEntity<?> deleteAlumno (@PathVariable Long id){
 
         if(service.existsById(id)){
+            Optional<Alumno> alumnoOptional = service.findById(id);
+            Alumno a = alumnoOptional.get();
+            List<Calificacion> calificacionesAlumno = serviceCalificacion.findByAlumnoId(id);
+
+            calificacionesAlumno = calificacionesAlumno.stream()
+                    .filter(calificacion -> calificacion.getAlumno().getId().equals(a.getId()))
+                    .toList();
+
+            calificacionesAlumno.forEach(calificacion -> {
+                serviceCalificacion.deleteById(calificacion.getId());
+            });
+
             service.deleteById(id);
         }
         return ResponseEntity.noContent().build();
