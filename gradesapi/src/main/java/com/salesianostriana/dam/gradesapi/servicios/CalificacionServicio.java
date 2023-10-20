@@ -2,15 +2,12 @@ package com.salesianostriana.dam.gradesapi.servicios;
 
 import com.salesianostriana.dam.gradesapi.dto.Calificacion.*;
 import com.salesianostriana.dam.gradesapi.modelo.Alumno;
-import com.salesianostriana.dam.gradesapi.modelo.Asignatura;
 import com.salesianostriana.dam.gradesapi.modelo.Calificacion;
 import com.salesianostriana.dam.gradesapi.modelo.Instrumento;
 import com.salesianostriana.dam.gradesapi.repositorios.CalificacionRepositorio;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +19,7 @@ public class CalificacionServicio {
     private final CalificacionRepositorio repositorio;
     private final InstrumentoServicio instrumentoService;
     private final AlumnoServicio alumnoService;
-    private final AsignaturaServicio asignaturaService;
+
 
 
     public Optional<Calificacion> findById(Long id){return repositorio.findById(id);}
@@ -124,6 +121,21 @@ public class CalificacionServicio {
         return new GetAlumnoEnCalificacion02DTO(idAsignatura, codReferente, alumnos);
     }
 
+    public boolean existsById(Long id){
+        return repositorio.existsById(id);
+    }
+
+    public void deleteById(Long id){
+        repositorio.deleteById(id);
+    }
+
+    public List<Calificacion> findByInstrumentoId(Long instrumentoId) {
+        return repositorio.findByInstrumentoId(instrumentoId);
+    }
+
+    public List<Calificacion> findByAlumnoId(Long alumnoId) {
+        return repositorio.findByAlumnoId(alumnoId);
+    }
 
 }
 
