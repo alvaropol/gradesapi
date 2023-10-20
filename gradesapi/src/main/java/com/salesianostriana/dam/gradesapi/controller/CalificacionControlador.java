@@ -201,4 +201,22 @@ public class CalificacionControlador {
             return ResponseEntity.badRequest().body(new Mensaje("No se puede crear la calificación. Compruebe que los datos del instrumento y los referentes son correctos"));
         }
     }
+
+
+    @Operation(summary = "Elimina una calificacion por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado esa calificacion por ese ID",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Calificacion.class))
+                    )}),
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCalificacion(@PathVariable Long id){
+
+        if(calificacionServicio.existsById(id))
+            calificacionServicio.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

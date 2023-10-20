@@ -124,6 +124,13 @@ public class CalificacionServicio {
         return new GetAlumnoEnCalificacion02DTO(idAsignatura, codReferente, alumnos);
     }
 
+    public boolean existsById(Long id){
+        return repositorio.existsById(id);
+    }
+
+    public void deleteById(Long id){
+        repositorio.deleteById(id);
+    }
 
 }
 
