@@ -33,7 +33,6 @@ public class AsignaturaControlador {
 
     private final AsignaturaServicio service;
     private final InstrumentoServicio serviceInstrumento;
-    private final AlumnoServicio serviceAlumno;
 
     @Operation(summary = "Obtiene una lista de todas las asignaturas")
     @ApiResponses(value = {
