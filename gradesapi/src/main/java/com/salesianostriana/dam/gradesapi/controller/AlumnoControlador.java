@@ -53,7 +53,7 @@ public class AlumnoControlador {
                                                 {"id": 2, "nombre": "Antonio", "apellidos":
                                                 "Vaquero Ruiz", "email": "antonio@gmail.com",
                                                 "telefono":"123456789", "fechaNacimiento": "10/09/2001",
-                                                "cantidadAsignaturas": 8}
+                                                "cantidadAsignaturas": 8},
                                                 
                                                 {"id": 3, "nombre": "Lucia", "apellidos":
                                                 "Perez Alguacil", "email": "lucia@gmail.com",

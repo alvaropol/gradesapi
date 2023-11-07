@@ -45,11 +45,11 @@ public class AsignaturaControlador {
                                             [
                                                 { "id": 1, "nombre": "Bases de Datos", 
                                                 "horas": 192, "descripción": "Asignatura de bases de datos", 
-                                                "numReferentes": 12}
+                                                "numReferentes": 12},
                                                 
                                                 { "id": 2, "nombre": "Programacion", 
                                                 "horas": 230, "descripción": "Asignatura de programacion", 
-                                                "numReferentes": 8}
+                                                "numReferentes": 8},
                                                 
                                                 { "id": 3, "nombre": "Sistemas informáticos", 
                                                 "horas": 98, "descripción": "Asignatura de Sistemas informáticos", 
@@ -92,12 +92,9 @@ public class AsignaturaControlador {
                                                { "id": 1, "nombre": "Bases de Datos", 
                                                "horas": 192, "descripción": "Asignatura de bases de datos", 
                                                "referentes": [
-                                               { "codReferente": 1, 
-                                               "descripcion": "El alumno sabe hacer consultas},
-                                               { "codReferente": 2, 
-                                               "descripcion": "El alumno sabe definir conceptos de base de datos}
+                                               { "codReferente": 1, "descripcion": "El alumno sabe hacer consultas"},
+                                               { "codReferente": 2, "descripcion": "El alumno sabe definir conceptos de base de datos"}
                                                ] }
-                                               
                                             ]                                          
                                             """
                             )}
@@ -124,7 +121,7 @@ public class AsignaturaControlador {
                                             [
                                                { "id": 1, "nombre": "Bases de Datos", 
                                                "horas": 192, "descripción": 
-                                               "Asignatura de bases de datos" }
+                                               "Asignatura de bases de datos" },
                                                
                                                { "id": 2, "nombre": "Programación", 
                                                "horas": 230, "descripción": 
