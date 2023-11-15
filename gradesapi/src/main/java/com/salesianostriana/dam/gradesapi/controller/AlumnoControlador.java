@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -144,7 +145,7 @@ public class AlumnoControlador {
                     content = @Content),
     })
     @PostMapping("/")
-    public ResponseEntity<PostAlumnoDTO> crearAlumno(@RequestBody PostAlumnoDTO nuevo){
+    public ResponseEntity<PostAlumnoDTO> crearAlumno(@Valid @RequestBody PostAlumnoDTO nuevo){
 
         if(nuevo==null){
            return ResponseEntity.badRequest().build();
