@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.GetAlumnoDTO;
 import com.salesianostriana.dam.gradesapi.dto.Alumno.PostAlumnoDTO;
+import com.salesianostriana.dam.gradesapi.error.AlumnoNotFoundException;
+import com.salesianostriana.dam.gradesapi.error.GlobalExceptionHandler;
 import com.salesianostriana.dam.gradesapi.modelo.*;
 import com.salesianostriana.dam.gradesapi.servicios.AlumnoServicio;
 import com.salesianostriana.dam.gradesapi.servicios.AsignaturaServicio;
@@ -114,8 +116,10 @@ public class AlumnoControlador {
     @GetMapping("/{id}")
     @JsonView(AlumnoView.AlumnoList02.class)
     public ResponseEntity<GetAlumnoDTO> getById(@PathVariable Long id){
-        return ResponseEntity.of(service.findById(id)
-                .map(GetAlumnoDTO::of));
+        return service.findById(id)
+                .map(GetAlumnoDTO::of)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new AlumnoNotFoundException(id));
     }
 
 
