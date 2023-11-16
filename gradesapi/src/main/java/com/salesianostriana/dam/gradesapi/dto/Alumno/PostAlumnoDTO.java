@@ -16,11 +16,9 @@ public record PostAlumnoDTO(
         String apellidos,
         String email,
         String telefono,
-
         LocalDate fechaNacimiento
 
 ) {
-
     public static PostAlumnoDTO of(Alumno a){
 
         return new PostAlumnoDTO(
