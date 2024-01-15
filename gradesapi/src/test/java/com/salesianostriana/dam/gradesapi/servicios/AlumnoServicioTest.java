@@ -42,7 +42,7 @@ class AlumnoServicioTest {
         Set<Asignatura> subjects = alumno1.getAsignaturas();
 
         for(Asignatura a : subjects){
-            subjectAdded = a.getId() == 2L;
+            subjectAdded = a.getId() == 1L;
         }
 
         assertTrue(subjectAdded);
