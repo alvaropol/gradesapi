@@ -8,14 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AlumnoServicioTest {
@@ -24,27 +25,21 @@ class AlumnoServicioTest {
     private AlumnoRepositorio repo;
     @Mock
     private AsignaturaRepositorio repoAsignatura;
-
     @InjectMocks
     private AlumnoServicio service;
-
-
-
     @Test
     void addAsignatura() {
+        Asignatura asignatura1 = new Asignatura(1L, "Matematicas", 200, "Mates", null);
+        Set<Asignatura> asignaturas = new HashSet<Asignatura>();
 
-        Asignatura asignatura1 = new Asignatura(1L,"Matematicas",200,"Mates",null);
-        Alumno alumno1 = new Alumno(1L,"Luis","Fermin","luis@gmail.com","23984394", LocalDate.of(2000,3,19),null);
-        boolean subjectAdded = false;
-        
-        service.addAsignatura(alumno1.getId(),asignatura1.getId());
+        Alumno alumno1 = Alumno.builder().id(1L).nombre("Luis").apellidos("Fermin").asignaturas(asignaturas).build();
 
-        Set<Asignatura> subjects = alumno1.getAsignaturas();
+        when(repo.findById(alumno1.getId())).thenReturn(Optional.of(alumno1));
+        when(repoAsignatura.findById(asignatura1.getId())).thenReturn(Optional.of(asignatura1));
 
-        for(Asignatura a : subjects){
-            subjectAdded = a.getId() == 1L;
-        }
+        service.addAsignatura(alumno1.getId(), asignatura1.getId());
 
-        assertTrue(subjectAdded);
+        assertTrue(alumno1.getAsignaturas().contains(asignatura1));
+        assertEquals(1, alumno1.getAsignaturas().size());
     }
 }
