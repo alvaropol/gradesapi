@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -30,7 +29,7 @@ class AlumnoServicioTest {
     @Test
     void addAsignatura() {
         Asignatura asignatura1 = new Asignatura(1L, "Matematicas", 200, "Mates", null);
-        Set<Asignatura> asignaturas = new HashSet<Asignatura>();
+        Set<Asignatura> asignaturas = new HashSet<>();
 
         Alumno alumno1 = Alumno.builder().id(1L).nombre("Luis").apellidos("Fermin").asignaturas(asignaturas).build();
 
